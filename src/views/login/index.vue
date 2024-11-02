@@ -2,8 +2,12 @@
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
 
+      <!-- 添加标题 -->
+      <div class="header">
+        <h1>不确定性影响下的建筑<br>生命周期碳排放计算软件</h1>
+      </div>
       <div class="title-container">
-        <h3 class="title">Login Form</h3>
+        <h3 class="title">V1.0.1</h3>
       </div>
 
       <el-form-item prop="username">
@@ -216,6 +220,30 @@ $cursor: #fff;
 
 /* reset element-ui css */
 .login-container {
+  /* 设置背景图片 */
+  background-image: url('login.png');
+  /* 背景图片填充方式 */
+  background-size: cover;
+  /* 背景图片位置 */
+  background-position: center;
+  /* 背景颜色（可选） */
+  background-color: #ffffff;
+  /* 背景图片是否重复 */
+  background-repeat: no-repeat;
+  /* 高度设置为视口高度的100%，确保背景覆盖整个屏幕 */
+  height: 100vh;
+  .header {
+    text-align: center;
+    margin-bottom: 30px; /* 调整标题与表单之间的间距 */
+    margin-top: -75px; /* 将标题往上移动50px */
+}
+
+  .header h1 {
+    font-size: 35px; /* 调整字体大小 */
+    color: #333; /* 调整字体颜色 */
+    font-weight: bold; /* 加粗字体 */
+  }
+
   .el-input {
     display: inline-block;
     height: 47px;
