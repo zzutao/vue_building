@@ -108,6 +108,18 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/Design_uncertainty',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/app/Design_uncertainty'),
+        name: 'Documentation',
+        meta: { title: '设计不确定性', icon: 'documentation', affix: true }
+      }
+    ]
+  },
+  {
     path: '/documentation',
     component: Layout,
     children: [
