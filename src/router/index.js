@@ -84,14 +84,26 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/app',
+    path: '/Basic_information',
     component: Layout,
     children: [
       {
-        path: 'app/index',
+        path: 'index',
         component: () => import('@/views/app/Basic_information'),
         name: 'Documentation',
         meta: { title: '我的项目', icon: 'documentation', affix: true }
+      }
+    ]
+  },
+  {
+    path: '/Design_variable',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/app/Design_variable'),
+        name: 'Documentation',
+        meta: { title: '设计变量', icon: 'documentation', affix: true }
       }
     ]
   },
