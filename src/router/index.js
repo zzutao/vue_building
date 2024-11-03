@@ -120,6 +120,18 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/LCA_method',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/app/LCA_method'),
+        name: 'Documentation',
+        meta: { title: 'LCA方法不确定性', icon: 'documentation', affix: true }
+      }
+    ]
+  },
+  {
     path: '/documentation',
     component: Layout,
     children: [
