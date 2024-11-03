@@ -34,7 +34,7 @@
           <el-button type="success" :disabled="!isEditing" @click="handleSave">保存</el-button>
           <el-table-column type="selection" width="55" :selectable="isEditable" />
           <el-table-column prop="no" label="方案" width="50" />
-          <el-table-column prop="Materials" label="能源" width="130" />
+          <el-table-column prop="Energy" label="能源" width="180" />
           <el-table-column prop="ef" label="碳排放因子平均值" width="140" />
           <el-table-column prop="unit" label="单位" width="130" />
           <el-table-column prop="characterization" label="不确定性表征方式" width="140" />
