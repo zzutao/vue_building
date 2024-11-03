@@ -132,6 +132,18 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/LAC_Basic_Data',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/app/LAC_Basic_Data'),
+        name: 'Documentation',
+        meta: { title: 'LCA基础数据不确定性', icon: 'documentation', affix: true }
+      }
+    ]
+  },
+  {
     path: '/documentation',
     component: Layout,
     children: [
