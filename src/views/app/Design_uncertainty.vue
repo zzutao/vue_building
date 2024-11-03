@@ -15,6 +15,8 @@
 
     <el-collapse v-model="activePanels" accordion>
       <el-collapse-item v-for="option in checkedOptions" :key="option" :name="option" :title="getOptionItem(option).label">
+        <el-button type="primary" :disabled="isEditing" @click="handleEdit">修改</el-button>
+        <el-button type="success" :disabled="!isEditing" @click="handleSave">保存</el-button>
         <el-table v-if="['option5', 'option6', 'option7'].includes(option)" :data="tableData[option]" style="width: 100%" :row-class-name="tableRowClassName" @selection-change="handleSelectionChange">
           <el-button type="primary" :disabled="isEditing" @click="handleEdit">修改</el-button>
           <el-button type="success" :disabled="!isEditing" @click="handleSave">保存</el-button>
