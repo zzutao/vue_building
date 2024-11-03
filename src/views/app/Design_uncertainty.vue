@@ -13,7 +13,7 @@
       </el-form-item>
     </el-form>
 
-    <el-collapse v-model="activePanels">
+    <el-collapse v-model="activePanels" accordion>
       <el-collapse-item v-for="option in checkedOptions" :key="option" :name="option" :title="getOptionItem(option).label">
         <el-button type="primary" :disabled="isEditing" @click="handleEdit">修改</el-button>
         <el-button type="success" :disabled="!isEditing" @click="handleSave">保存</el-button>
@@ -172,7 +172,7 @@ export default {
         { value: 'option12', label: 'DE10. 设备选型及材料用量', disabled: true }
       ],
       checkedOptions: [],
-      activePanels: [],
+      activePanels: '',
       tableData: {
         option5: southWindowData,
         option6: northWindowData,
@@ -186,7 +186,11 @@ export default {
   watch: {
     checkedOptions: {
       handler(newVal) {
-        this.activePanels = newVal
+        if (newVal.length) {
+          this.activePanels = newVal[newVal.length - 1]
+        } else {
+          this.activePanels = ''
+        }
       },
       deep: true
     }
