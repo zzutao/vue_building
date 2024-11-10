@@ -104,59 +104,42 @@
 </template>
 
 <script>
+import { mapState, mapMutations, mapActions } from 'vuex'
+
 export default {
-  data() {
-    return {
-      isEditing: false,
-      form: {
-        projectName: 'TJU-15',
-        thermalZone: '寒冷地区',
-        buildingType: '办公建筑',
-        structureType: '砖混结构',
-        aboveGroundFloors: '4层',
-        belowGroundFloors: '0层',
-        aboveGroundBuildingArea: '5184',
-        belowGroundBuildingArea: '0',
-        southWindowArea: '365',
-        northWindowArea: '365',
-        eastWestWindowArea: '45',
-        outerWallInsulationArea: '2060',
-        roofInsulationArea: '1440',
-        groundFloorInsulationArea: '1440',
-        heatingType: '天然气集中供暖',
-        coolingType: '分体式空调，COP=3.0'
-      }
-    }
+  computed: {
+    ...mapState('buildingInfo', ['form', 'isEditing'])
   },
   methods: {
+    ...mapMutations('buildingInfo', ['setIsEditing']),
+    ...mapActions('buildingInfo', ['updateForm']),
     handleEdit() {
-      this.isEditing = true
+      this.setIsEditing(true)
     },
     handleSave() {
-      this.isEditing = false
-      // 这里可以添加保存逻辑
+      this.updateForm(this.form)
+      this.setIsEditing(false)
       console.log('保存成功')
     },
     handleSubmit() {
-      // 这里可以添加提交逻辑
       console.log('提交成功')
     }
   }
 }
 </script>
 
-  <style scoped>
-  .box-card {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  .clearfix:before,
-  .clearfix:after {
-    display: table;
-    content: "";
-  }
-  .clearfix:after {
-    clear: both;
-  }
-  </style>
+<style scoped>
+.box-card {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+.clearfix:after {
+  clear: both;
+}
+</style>
