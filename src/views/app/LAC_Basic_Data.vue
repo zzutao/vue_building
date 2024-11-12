@@ -312,8 +312,6 @@ export default {
         <el-button type="primary" :disabled="isEditing" @click="handleEdit">修改</el-button>
         <el-button type="success" :disabled="!isEditing" @click="handleSave">保存</el-button>
         <el-table v-if="['option1'].includes(option)" :data="tableData[option]" style="width: 100%" :row-class-name="tableRowClassName" @selection-change="handleSelectionChange">
-          <el-button type="primary" :disabled="isEditing" @click="handleEdit">修改</el-button>
-          <el-button type="success" :disabled="!isEditing" @click="handleSave">保存</el-button>
           <el-table-column type="selection" width="55" :selectable="isEditable" />
           <el-table-column prop="no" label="方案" width="50" />
           <el-table-column prop="Materials" label="建筑材料" width="130" />
@@ -324,8 +322,6 @@ export default {
           <el-table-column prop="distributionFunction" label="分布函数" width="140" />
         </el-table>
         <el-table v-else :data="tableData[option]" style="width: 100%" :row-class-name="tableRowClassName" @selection-change="handleSelectionChange">
-          <el-button type="primary" :disabled="isEditing" @click="handleEdit">修改</el-button>
-          <el-button type="success" :disabled="!isEditing" @click="handleSave">保存</el-button>
           <el-table-column type="selection" width="55" :selectable="isEditable" />
           <el-table-column prop="no" label="方案" width="50" />
           <el-table-column prop="Energy" label="能源" width="180" />
@@ -379,16 +375,13 @@ export default {
     },
     handleEdit() {
       this.updateIsEditing(true)
-      // 重置所有行的 editable 属性为 true
       this.resetEditableStatus()
     },
     handleSave() {
       this.updateIsEditing(false)
-      // 将所有选中行的 editable 属性设置为 false
       this.selectedRows.forEach(row => {
         row.editable = false
       })
-      // 更新表格数据
       this.updateTableData({ key: this.localActivePanels, data: this.tableData[this.localActivePanels] })
     },
     handleSelectionChange(selection) {
@@ -410,12 +403,18 @@ export default {
           row.editable = true
         })
       }
+    },
+    updateLocalCheckedOptions() {
+      this.setCheckedOptions(this.localCheckedOptions)
+    },
+    updateLocalActivePanels() {
+      this.setActivePanels(this.localActivePanels)
     }
   },
   watch: {
     localCheckedOptions: {
       handler(newVal) {
-        this.updateCheckedOptions(newVal)
+        this.updateLocalCheckedOptions()
         if (newVal.length) {
           this.localActivePanels = newVal[newVal.length - 1]
         } else {
@@ -426,12 +425,12 @@ export default {
     },
     localActivePanels: {
       handler(newVal) {
-        this.updateActivePanels(newVal)
+        this.updateLocalActivePanels()
       }
     }
   },
   created() {
-    this.localCheckedOptions = this.checkedOptions
+    this.localCheckedOptions = this.checkedOptions.slice() // 使用 slice() 创建一个新的数组副本
     this.localActivePanels = this.activePanels
   }
 }
