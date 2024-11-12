@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <el-card class="box-card">
     <div slot="header" class="clearfix">
       <span>LCA方法及其相关的不确定性设置</span>
@@ -152,6 +152,155 @@ export default {
       display: table;
       content: "";
     }
+    .clearfix:after {
+      clear: both;
+    }
+    </style> -->
+<template>
+  <el-card class="box-card">
+    <div slot="header" class="clearfix">
+      <span>LCA方法及其相关的不确定性设置</span>
+    </div>
+    <el-form label-position="right" label-width="120px">
+      <el-form-item label="请设置：">
+        <el-checkbox-group v-model="localCheckedOptions">
+          <el-checkbox v-for="option in options" :key="option.value" :label="option.value" :disabled="option.disabled">
+            {{ option.label }}
+          </el-checkbox>
+        </el-checkbox-group>
+      </el-form-item>
+    </el-form>
+
+    <el-collapse v-model="localActivePanels" accordion>
+      <el-collapse-item v-for="option in checkedOptions" :key="option" :name="option" :title="getOptionItem(option).label">
+        <el-button type="primary" :disabled="isEditing" @click="handleEdit">修改</el-button>
+        <el-button type="success" :disabled="!isEditing" @click="handleSave">保存</el-button>
+        <el-table v-if="['option3', 'option7'].includes(option)" :data="tableData[option]" style="width: 100%" :row-class-name="tableRowClassName" @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55" :selectable="isEditable" />
+          <el-table-column prop="no" label="方案" width="50" />
+          <el-table-column prop="distributionPattern" label="分布形态" width="130" />
+          <el-table-column prop="distributionFunction" label="分布函数" width="140" />
+        </el-table>
+        <el-table v-else-if="['option6'].includes(option)" :data="tableData[option]" style="width: 100%" :row-class-name="tableRowClassName" @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55" :selectable="isEditable" />
+          <el-table-column prop="no" label="方案" width="50" />
+          <el-table-column prop="buildingConstruction" label="建筑构建" width="130" />
+          <el-table-column prop="distributionPattern" label="分布形态" width="140" />
+          <el-table-column prop="distributionFunction" label="分布函数" width="160" />
+        </el-table>
+        <el-table v-else :data="tableData[option]" style="width: 100%" :row-class-name="tableRowClassName" @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55" :selectable="isEditable" />
+          <el-table-column prop="no" label="方案" width="50" />
+          <el-table-column prop="uValue" label="气候变暖情景" width="120" />
+        </el-table>
+      </el-collapse-item>
+    </el-collapse>
+  </el-card>
+</template>
+
+<script>
+import { mapState, mapMutations, mapActions } from 'vuex'
+
+export default {
+  data() {
+    return {
+      localCheckedOptions: [],
+      localActivePanels: ''
+    }
+  },
+  computed: {
+    ...mapState('lcaMethod', [
+      'isEditing',
+      'selectedRows',
+      'options',
+      'checkedOptions',
+      'activePanels',
+      'tableData'
+    ])
+  },
+  methods: {
+    ...mapMutations('lcaMethod', [
+      'setIsEditing',
+      'setSelectedRows',
+      'setCheckedOptions',
+      'setActivePanels'
+    ]),
+    ...mapActions('lcaMethod', [
+      'updateIsEditing',
+      'updateSelectedRows',
+      'updateCheckedOptions',
+      'updateActivePanels',
+      'updateTableData'
+    ]),
+    getOptionItem(value) {
+      return this.options.find((item) => item.value === value)
+    },
+    handleEdit() {
+      this.updateIsEditing(true)
+    },
+    handleSave() {
+      this.updateIsEditing(false)
+      this.selectedRows.forEach(row => {
+        row.editable = false
+      })
+    },
+    handleSelectionChange(selection) {
+      this.updateSelectedRows(selection)
+    },
+    isEditable(row) {
+      return this.isEditing && row.editable !== false
+    },
+    tableRowClassName({ row }) {
+      if (row.editable === false) {
+        return 'saved-row'
+      }
+      return ''
+    },
+    updateLocalCheckedOptions() {
+      this.updateCheckedOptions(this.localCheckedOptions)
+    },
+    updateLocalActivePanels() {
+      this.updateActivePanels(this.localActivePanels)
+    }
+  },
+  watch: {
+    localCheckedOptions: {
+      handler(newVal) {
+        this.updateLocalCheckedOptions()
+        if (newVal.length) {
+          this.localActivePanels = newVal[newVal.length - 1]
+        } else {
+          this.localActivePanels = ''
+        }
+      },
+      deep: true
+    },
+    localActivePanels: {
+      handler(newVal) {
+        this.updateLocalActivePanels()
+      }
+    }
+  },
+  created() {
+    this.localCheckedOptions = this.checkedOptions
+    this.localActivePanels = this.activePanels
+  }
+}
+</script>
+
+    <style scoped>
+    .box-card {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .clearfix:before,
+    .clearfix:after {
+      display: table;
+      content: "";
+    }
+
     .clearfix:after {
       clear: both;
     }
