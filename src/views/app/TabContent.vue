@@ -153,15 +153,15 @@ export default {
         case '东西窗选型':
           this.setEastWestWindowData(data)
           break
-          // 其他情况可以根据需要添加
+            // 其他情况可以根据需要添加
       }
     }
   }
 }
 </script>
 
-  <style scoped>
-  .saved-row {
-    background-color: #f0f9eb;
-  }
-  </style>
+    <style scoped>
+    .saved-row {
+      background-color: #f0f9eb;
+    }
+    </style>
