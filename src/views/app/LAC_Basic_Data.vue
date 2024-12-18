@@ -296,6 +296,7 @@ export default {
   <el-card class="box-card">
     <div slot="header" class="clearfix">
       <span>LCA基础数据及其不确定性设置</span>
+      <el-button type="primary" style="float: right;" @click="submitData">提交数据</el-button>
     </div>
     <el-form label-position="right" label-width="120px">
       <el-form-item label="请设置：">
@@ -338,6 +339,7 @@ export default {
 
 <script>
 import { mapState, mapMutations, mapActions } from 'vuex'
+import { submitDesignData } from '../../api/design' // 确保路径正确
 
 export default {
   data() {
@@ -347,6 +349,31 @@ export default {
     }
   },
   computed: {
+    ...mapState('buildingInfo', ['form', 'isEditing']),
+    ...mapState('designVariable', [
+      'southWindowData',
+      'northWindowData',
+      'eastWestWindowData',
+      'outerWallInsulationData',
+      'roofInsulationData',
+      'groundFloorInsulationData'
+    ]),
+    ...mapState('designUncertainty', [
+      'isEditing',
+      'selectedRows',
+      'checkedOptions',
+      'activePanels',
+      'options',
+      'tableData'
+    ]),
+    ...mapState('lcaMethod', [
+      'isEditing',
+      'selectedRows',
+      'options',
+      'checkedOptions',
+      'activePanels',
+      'tableData'
+    ]),
     ...mapState('lacBasicData', [
       'isEditing',
       'selectedRows',
@@ -354,7 +381,45 @@ export default {
       'checkedOptions',
       'activePanels',
       'tableData'
-    ])
+    ]),
+    // 定义一个新的计算属性来整合所有需要的数据
+    designData() {
+      return {
+        buildingInfo: this.form,
+        designVariable: {
+          southWindowData: this.southWindowData,
+          northWindowData: this.northWindowData,
+          eastWestWindowData: this.eastWestWindowData,
+          outerWallInsulationData: this.outerWallInsulationData,
+          roofInsulationData: this.roofInsulationData,
+          groundFloorInsulationData: this.groundFloorInsulationData
+        },
+        designUncertainty: {
+          isEditing: this.isEditing,
+          selectedRows: this.selectedRows,
+          checkedOptions: this.checkedOptions,
+          activePanels: this.activePanels,
+          options: this.options,
+          tableData: this.tableData
+        },
+        lcaMethod: {
+          isEditing: this.isEditing,
+          selectedRows: this.selectedRows,
+          options: this.options,
+          checkedOptions: this.checkedOptions,
+          activePanels: this.activePanels,
+          tableData: this.tableData
+        },
+        lacBasicData: {
+          isEditing: this.isEditing,
+          selectedRows: this.selectedRows,
+          options: this.options,
+          checkedOptions: this.checkedOptions,
+          activePanels: this.activePanels,
+          tableData: this.tableData
+        }
+      }
+    }
   },
   methods: {
     ...mapMutations('lacBasicData', [
@@ -409,6 +474,43 @@ export default {
     },
     updateLocalActivePanels() {
       this.setActivePanels(this.localActivePanels)
+    },
+    async submitData() {
+      // try {
+      //   // 调用 API 提交数据
+      //   await submitDesignData(this.designData);
+      //   Message({
+      //     message: '数据提交成功',
+      //     type: 'success',
+      //     duration: 5 * 1000
+      //   });
+      // } catch (error) {
+      //   console.error('数据提交失败:', error);
+      //   Message({
+      //     message: '数据提交失败，请重试。',
+      //     type: 'error',
+      //     duration: 5 * 1000
+      //   });
+      // }
+      try {
+        console.log('Sending data:', this.designData) // 查看发送的数据
+
+        const response = await submitDesignData(this.designData)
+        console.log('Response:', response) // 查看接收的响应
+
+        this.$message({
+          message: '数据提交成功',
+          type: 'success',
+          duration: 5 * 1000
+        })
+      } catch (error) {
+        console.error('数据提交失败:', error)
+        this.$message({
+          message: '数据提交失败，请重试。',
+          type: 'error',
+          duration: 5 * 1000
+        })
+      }
     }
   },
   watch: {
