@@ -384,44 +384,43 @@ export default {
     ]),
     // 定义一个新的计算属性来整合所有需要的数据
     designData() {
+      const filterEditableItems = (items, prefix) =>
+        items.filter(item => item.editable === false).map(item => ({ ...item, [prefix]: true }))
       return {
-        buildingInfo: this.form,
+        buildingInfo: this.$store.state.buildingInfo.form,
         designVariable: {
-          southWindowData: this.southWindowData,
-          northWindowData: this.northWindowData,
-          eastWestWindowData: this.eastWestWindowData,
-          outerWallInsulationData: this.outerWallInsulationData,
-          roofInsulationData: this.roofInsulationData,
-          groundFloorInsulationData: this.groundFloorInsulationData
+          southWindowData: filterEditableItems(this.$store.state.designVariable.southWindowData, 'southWindowData'),
+          northWindowData: filterEditableItems(this.$store.state.designVariable.northWindowData, 'northWindowData'),
+          eastWestWindowData: filterEditableItems(this.$store.state.designVariable.eastWestWindowData, 'eastWestWindowData'),
+          outerWallInsulationData: filterEditableItems(this.$store.state.designVariable.outerWallInsulationData, 'outerWallInsulationData'),
+          roofInsulationData: filterEditableItems(this.$store.state.designVariable.roofInsulationData, 'roofInsulationData'),
+          groundFloorInsulationData: filterEditableItems(this.$store.state.designVariable.groundFloorInsulationData, 'groundFloorInsulationData')
         },
         designUncertainty: {
-          isEditing: this.isEditing,
-          selectedRows: this.selectedRows,
-          checkedOptions: this.checkedOptions,
-          activePanels: this.activePanels,
-          options: this.options,
-          tableData: this.tableData
+          checkedOptions: this.$store.state.designUncertainty.checkedOptions,
+          tableData: this.filterTableData(this.$store.state.designUncertainty.tableData)
         },
         lcaMethod: {
-          isEditing: this.isEditing,
-          selectedRows: this.selectedRows,
-          options: this.options,
-          checkedOptions: this.checkedOptions,
-          activePanels: this.activePanels,
-          tableData: this.tableData
+          checkedOptions: this.$store.state.lcaMethod.checkedOptions,
+          tableData: this.filterTableData(this.$store.state.lcaMethod.tableData)
         },
         lacBasicData: {
-          isEditing: this.isEditing,
-          selectedRows: this.selectedRows,
-          options: this.options,
-          checkedOptions: this.checkedOptions,
-          activePanels: this.activePanels,
-          tableData: this.tableData
+          checkedOptions: this.$store.state.lacBasicData.checkedOptions,
+          tableData: this.filterTableData(this.$store.state.lacBasicData.tableData)
         }
       }
     }
   },
   methods: {
+    // Helper method to filter table data based on editable property
+    filterTableData(tableData) {
+      return Object.fromEntries(
+        Object.entries(tableData).map(([key, rows]) => [
+          key,
+          rows.filter(row => row.editable === false).map(row => ({ ...row, [key]: true }))
+        ])
+      )
+    },
     ...mapMutations('lacBasicData', [
       'setIsEditing',
       'setSelectedRows',
