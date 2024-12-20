@@ -352,7 +352,7 @@ export default {
     <el-form label-position="right" label-width="120px">
       <el-form-item label="请设置：">
         <el-checkbox-group v-model="localCheckedOptions">
-          <el-checkbox v-for="option in dynamicOptions" :key="option.value" :label="option.value" :disabled="option.disabled">
+          <el-checkbox v-for="option in options" :key="option.value" :label="option.value" :disabled="option.disabled">
             {{ option.label }}
           </el-checkbox>
         </el-checkbox-group>
@@ -538,7 +538,7 @@ export default {
 }
 </style> -->
 
-<script>
+<!-- <script>
 import { mapState, mapMutations, mapActions } from 'vuex'
 
 export default {
@@ -702,4 +702,121 @@ export default {
 .clearfix:after {
   clear: both;
 }
-</style>
+</style> -->
+<script>
+import { mapState, mapMutations, mapActions } from 'vuex'
+
+export default {
+  data() {
+    return {
+      localCheckedOptions: [],
+      localActivePanels: ''
+    }
+  },
+  computed: {
+    ...mapState('designUncertainty', [
+      'isEditing',
+      'selectedRows',
+      'options',
+      'checkedOptions',
+      'activePanels',
+      'tableData'
+    ])
+  },
+  methods: {
+    ...mapMutations('designUncertainty', [
+      'setIsEditing',
+      'setSelectedRows',
+      'setCheckedOptions',
+      'setActivePanels'
+    ]),
+    ...mapActions('designUncertainty', [
+      'updateIsEditing',
+      'updateSelectedRows',
+      'updateCheckedOptions',
+      'updateActivePanels',
+      'updateTableData'
+    ]),
+    getOptionItem(value) {
+      return this.options.find((item) => item.value === value)
+    },
+    handleEdit() {
+      this.updateIsEditing(true)
+      this.resetEditableStatus()
+    },
+    handleSave() {
+      this.updateIsEditing(false)
+      this.selectedRows.forEach(row => {
+        row.editable = false
+      })
+      this.updateTableData({ key: this.localActivePanels, data: this.tableData[this.localActivePanels] })
+    },
+    handleSelectionChange(selection) {
+      this.updateSelectedRows(selection)
+    },
+    isEditable(row) {
+      return this.isEditing && row.editable !== false
+    },
+    tableRowClassName({ row }) {
+      if (row.editable === false) {
+        return 'saved-row'
+      }
+      return ''
+    },
+    resetEditableStatus() {
+      const currentTableData = this.tableData[this.localActivePanels]
+      if (currentTableData) {
+        currentTableData.forEach(row => {
+          row.editable = true
+        })
+      }
+    },
+    updateLocalCheckedOptions() {
+      this.setCheckedOptions(this.localCheckedOptions)
+    },
+    updateLocalActivePanels() {
+      this.setActivePanels(this.localActivePanels)
+    }
+  },
+  watch: {
+    localCheckedOptions: {
+      handler(newVal) {
+        this.updateLocalCheckedOptions()
+        if (newVal.length) {
+          this.localActivePanels = newVal[newVal.length - 1]
+        } else {
+          this.localActivePanels = ''
+        }
+      },
+      deep: true
+    },
+    localActivePanels: {
+      handler(newVal) {
+        this.updateLocalActivePanels()
+      }
+    }
+  },
+  created() {
+    this.localCheckedOptions = this.checkedOptions.slice() // 使用 slice() 创建一个新的数组副本
+    this.localActivePanels = this.activePanels
+  }
+}
+</script>
+
+    <style scoped>
+    .box-card {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .clearfix:before,
+    .clearfix:after {
+      display: table;
+      content: "";
+    }
+
+    .clearfix:after {
+      clear: both;
+    }
+    </style>
