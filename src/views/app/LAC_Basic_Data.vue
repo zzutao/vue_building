@@ -296,7 +296,11 @@ export default {
   <el-card class="box-card">
     <div slot="header" class="clearfix">
       <span>LCA基础数据及其不确定性设置</span>
-      <el-button type="primary" style="float: right;" @click="submitData">提交数据</el-button>
+      <!-- <el-button type="primary" style="float: right;" @click="submitData">提交数据</el-button> -->
+      <div style="float: right;">
+        <el-input v-model="email" placeholder="请输入您的邮箱" style="width: 200px; margin-right: 10px;" />
+        <el-button type="primary" @click="submitData">提交数据</el-button>
+      </div>
     </div>
     <el-form label-position="right" label-width="120px">
       <el-form-item label="请设置：">
@@ -345,7 +349,8 @@ export default {
   data() {
     return {
       localCheckedOptions: [],
-      localActivePanels: ''
+      localActivePanels: '',
+      email: '' // 新增邮箱字段
     }
   },
   computed: {
@@ -407,7 +412,8 @@ export default {
         lacBasicData: {
           checkedOptions: this.$store.state.lacBasicData.checkedOptions,
           tableData: this.filterTableData(this.$store.state.lacBasicData.tableData)
-        }
+        },
+        userEmail: this.email // 将用户的邮箱添加到设计数据中
       }
     }
   },
@@ -475,22 +481,16 @@ export default {
       this.setActivePanels(this.localActivePanels)
     },
     async submitData() {
-      // try {
-      //   // 调用 API 提交数据
-      //   await submitDesignData(this.designData);
-      //   Message({
-      //     message: '数据提交成功',
-      //     type: 'success',
-      //     duration: 5 * 1000
-      //   });
-      // } catch (error) {
-      //   console.error('数据提交失败:', error);
-      //   Message({
-      //     message: '数据提交失败，请重试。',
-      //     type: 'error',
-      //     duration: 5 * 1000
-      //   });
-      // }
+      // 邮箱验证正则表达式
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailPattern.test(this.email)) {
+        this.$message({
+          message: '邮箱格式不正确，请重新输入。',
+          type: 'warning',
+          duration: 5 * 1000
+        })
+        return
+      }
       try {
         console.log('Sending data:', this.designData) // 查看发送的数据
 

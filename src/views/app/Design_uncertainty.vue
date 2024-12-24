@@ -352,7 +352,7 @@ export default {
     <el-form label-position="right" label-width="120px">
       <el-form-item label="请设置：">
         <el-checkbox-group v-model="localCheckedOptions">
-          <el-checkbox v-for="option in options" :key="option.value" :label="option.value" :disabled="option.disabled">
+          <el-checkbox v-for="option in dynamicOptions" :key="option.value" :label="option.value" :disabled="option.disabled">
             {{ option.label }}
           </el-checkbox>
         </el-checkbox-group>
@@ -388,7 +388,7 @@ export default {
   </el-card>
 </template>
 
-<!-- <script>
+<script>
 import { mapState, mapMutations, mapActions } from 'vuex'
 
 export default {
@@ -402,9 +402,9 @@ export default {
     ...mapState('designUncertainty', [
       'isEditing',
       'selectedRows',
+      'options',
       'checkedOptions',
       'activePanels',
-      'options',
       'tableData'
     ]),
     ...mapState('designVariable', [
@@ -455,293 +455,6 @@ export default {
     },
     handleEdit() {
       this.updateIsEditing(true)
-      // 重置表格中所有行的 editable 属性
-      for (const key in this.tableData) {
-        this.tableData[key].forEach(row => {
-          row.editable = true
-        })
-      }
-    },
-    handleSave() {
-      this.updateIsEditing(false)
-      this.selectedRows.forEach(row => {
-        row.editable = false
-      })
-      // 更新 tableData 中的行数据
-      for (const key in this.tableData) {
-        this.tableData[key].forEach(row => {
-          if (!this.selectedRows.includes(row)) {
-            row.editable = false
-          }
-        })
-      }
-    },
-    handleSelectionChange(selection) {
-      this.updateSelectedRows(selection)
-    },
-    isEditable(row) {
-      return this.isEditing && row.editable !== false
-    },
-    tableRowClassName({ row }) {
-      if (row.editable === false) {
-        return 'saved-row'
-      }
-      return ''
-    },
-    updateLocalCheckedOptions() {
-      this.updateCheckedOptions(this.localCheckedOptions)
-    },
-    updateLocalActivePanels() {
-      this.updateActivePanels(this.localActivePanels)
-    }
-  },
-  watch: {
-    localCheckedOptions: {
-      handler(newVal) {
-        this.updateLocalCheckedOptions()
-        if (newVal.length) {
-          this.localActivePanels = newVal[newVal.length - 1]
-        } else {
-          this.localActivePanels = ''
-        }
-      },
-      deep: true
-    },
-    localActivePanels: {
-      handler(newVal) {
-        this.updateLocalActivePanels()
-      }
-    }
-  },
-  created() {
-    this.localCheckedOptions = this.checkedOptions
-    this.localActivePanels = this.activePanels
-  }
-}
-</script>
-
-<style scoped>
-.box-card {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.clearfix:before,
-.clearfix:after {
-  display: table;
-  content: "";
-}
-
-.clearfix:after {
-  clear: both;
-}
-</style> -->
-
-<!-- <script>
-import { mapState, mapMutations, mapActions } from 'vuex'
-
-export default {
-  data() {
-    return {
-      localCheckedOptions: [],
-      localActivePanels: ''
-    }
-  },
-  computed: {
-    ...mapState('designUncertainty', [
-      'isEditing',
-      'selectedRows',
-      'options',
-      'checkedOptions',
-      'activePanels',
-      'tableData'
-    ]),
-    // 动态计算 options 的 disabled 状态
-    dynamicOptions() {
-      return this.options.map(option => ({
-        ...option,
-        disabled: this.getOptionDisabledStatus(option.value)
-      }))
-    }
-  },
-  methods: {
-    ...mapMutations('designUncertainty', [
-      'setIsEditing',
-      'setSelectedRows',
-      'setCheckedOptions',
-      'setActivePanels'
-    ]),
-    ...mapActions('designUncertainty', [
-      'updateIsEditing',
-      'updateSelectedRows',
-      'updateCheckedOptions',
-      'updateActivePanels',
-      'updateTableData'
-    ]),
-    getOptionItem(value) {
-      return this.dynamicOptions.find((item) => item.value === value)
-    },
-    handleEdit() {
-      this.updateIsEditing(true)
-      this.resetEditableStatus()
-    },
-    handleSave() {
-      this.updateIsEditing(false)
-
-      const updatedTableData = { ...this.tableData }
-
-      // 创建 selectedRows 的副本以避免直接修改原始数据
-      const selectedRowsCopy = [...this.selectedRows]
-
-      // 更新 selectedRows 的 editable 属性为 false
-      selectedRowsCopy.forEach(row => {
-        if (updatedTableData[this.localActivePanels]) {
-          const rowIndex = updatedTableData[this.localActivePanels].findIndex(r => r.id === row.id) // 假设每行有一个唯一标识符 id
-          if (rowIndex !== -1) {
-            updatedTableData[this.localActivePanels][rowIndex] = {
-              ...updatedTableData[this.localActivePanels][rowIndex],
-              editable: false
-            }
-          }
-        }
-      })
-
-      // 更新 Vuex store 中的数据
-      this.updateTableData({ key: this.localActivePanels, data: [...updatedTableData[this.localActivePanels] || []] })
-
-      // 不要在这里调用 updateSelectedRows，因为这会导致 selectedRows 被覆盖
-    },
-    handleSelectionChange(selection) {
-      this.updateSelectedRows(selection)
-    },
-    isEditable(row) {
-      return this.isEditing && row.editable !== false
-    },
-    tableRowClassName({ row }) {
-      if (row.editable === false) {
-        return 'saved-row'
-      }
-      return ''
-    },
-    resetEditableStatus() {
-      const currentTableData = this.tableData[this.localActivePanels]
-      if (currentTableData) {
-        currentTableData.forEach(row => {
-          row.editable = true
-        })
-        this.updateTableData({ key: this.localActivePanels, data: [...currentTableData] })
-      }
-    },
-    updateLocalCheckedOptions() {
-      this.setCheckedOptions(this.localCheckedOptions.slice())
-    },
-    updateLocalActivePanels() {
-      this.setActivePanels(this.localActivePanels)
-    },
-    getOptionDisabledStatus(value) {
-      switch (value) {
-        case 'option5':
-          return this.southWindowData?.some(item => item.editable === false) ?? false
-        case 'option6':
-          return this.northWindowData?.some(item => item.editable === false) ?? false
-        case 'option7':
-          return this.eastWestWindowData?.some(item => item.editable === false) ?? false
-        case 'option8':
-          return this.outerWallInsulationData?.some(item => item.editable === false) ?? false
-        case 'option9':
-          return this.roofInsulationData?.some(item => item.editable === false) ?? false
-        case 'option10':
-          return this.groundFloorInsulationData?.some(item => item.editable === false) ?? false
-        default:
-          return this.options.find(option => option.value === value)?.disabled || false
-      }
-    }
-  },
-  watch: {
-    localCheckedOptions: {
-      handler(newVal) {
-        this.updateLocalCheckedOptions()
-        if (newVal.length) {
-          this.localActivePanels = newVal[newVal.length - 1]
-        } else {
-          this.localActivePanels = ''
-        }
-      },
-      deep: true
-    },
-    localActivePanels: {
-      handler(newVal) {
-        this.updateLocalActivePanels()
-      }
-    }
-  },
-  created() {
-    this.localCheckedOptions = this.checkedOptions.slice() // 使用 slice() 创建一个新的数组副本
-    this.localActivePanels = this.activePanels
-
-    // 初始化时确保 editable 属性正确设置
-    this.resetEditableStatus()
-  }
-}
-</script>
-
-<style scoped>
-.box-card {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.clearfix:before,
-.clearfix:after {
-  display: table;
-  content: "";
-}
-
-.clearfix:after {
-  clear: both;
-}
-</style> -->
-<script>
-import { mapState, mapMutations, mapActions } from 'vuex'
-
-export default {
-  data() {
-    return {
-      localCheckedOptions: [],
-      localActivePanels: ''
-    }
-  },
-  computed: {
-    ...mapState('designUncertainty', [
-      'isEditing',
-      'selectedRows',
-      'options',
-      'checkedOptions',
-      'activePanels',
-      'tableData'
-    ])
-  },
-  methods: {
-    ...mapMutations('designUncertainty', [
-      'setIsEditing',
-      'setSelectedRows',
-      'setCheckedOptions',
-      'setActivePanels'
-    ]),
-    ...mapActions('designUncertainty', [
-      'updateIsEditing',
-      'updateSelectedRows',
-      'updateCheckedOptions',
-      'updateActivePanels',
-      'updateTableData'
-    ]),
-    getOptionItem(value) {
-      return this.options.find((item) => item.value === value)
-    },
-    handleEdit() {
-      this.updateIsEditing(true)
       this.resetEditableStatus()
     },
     handleSave() {
@@ -750,6 +463,8 @@ export default {
         row.editable = false
       })
       this.updateTableData({ key: this.localActivePanels, data: this.tableData[this.localActivePanels] })
+      // 确保 selectedRows 不被覆盖
+      this.setSelectedRows([...this.selectedRows])
     },
     handleSelectionChange(selection) {
       this.updateSelectedRows(selection)
@@ -803,20 +518,20 @@ export default {
 }
 </script>
 
-    <style scoped>
-    .box-card {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
+<style scoped>
+.box-card {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
 
-    .clearfix:before,
-    .clearfix:after {
-      display: table;
-      content: "";
-    }
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
 
-    .clearfix:after {
-      clear: both;
-    }
-    </style>
+.clearfix:after {
+  clear: both;
+}
+</style>

@@ -1,8 +1,6 @@
 const state = {
   isEditing: false,
   selectedRows: [],
-  checkedOptions: [],
-  activePanels: '',
   options: [
     { value: 'option1', label: 'DE1. 建筑布局、朝向', disabled: true },
     { value: 'option2', label: 'DE2. 建筑形体尺寸', disabled: true },
@@ -17,6 +15,8 @@ const state = {
     { value: 'option11', label: 'DE9. 内墙参数及材料用量', disabled: true },
     { value: 'option12', label: 'DE10. 设备选型及材料用量', disabled: true }
   ],
+  checkedOptions: [],
+  activePanels: '',
   tableData: {
     option5: [
       { no: 0, uValue: 1.39, shgcValue: 0.24, ef: 97.7, windowFrame: '断桥铝合金框', glassStructure: '6热反射玻璃+15氩气+4白玻' },
@@ -163,9 +163,9 @@ const actions = {
 const getters = {
   getIsEditing: state => state.isEditing,
   getSelectedRows: state => state.selectedRows,
+  getOptions: state => state.options,
   getCheckedOptions: state => state.checkedOptions,
   getActivePanels: state => state.activePanels,
-  getOptions: state => state.options,
   getTableData: state => state.tableData
 }
 
