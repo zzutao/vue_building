@@ -33,10 +33,10 @@ const state = {
       { no: 0, distributionPattern: 'triang', distributionFunction: '(0.4,-0.02,0.015)' }
     ],
     option8: [
-      { no: 0, uValue: 'TMY' },
-      { no: 1, uValue: 'RCP2.6' },
-      { no: 2, uValue: 'RCP4.5' },
-      { no: 3, uValue: 'RCP8.5' }
+      { no: 0, uValue: 'RCP2.6，RCP4.5，RCP8.5' }
+      // { no: 1, uValue: 'RCP2.6' },
+      // { no: 2, uValue: 'RCP4.5' },
+      // { no: 3, uValue: 'RCP8.5' }
     ]
   }
 }

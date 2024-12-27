@@ -340,7 +340,7 @@ export default {
         <el-table v-else :data="tableData[option]" style="width: 100%" :row-class-name="tableRowClassName" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55" :selectable="isEditable" />
           <el-table-column prop="no" label="方案" width="50" />
-          <el-table-column prop="uValue" label="气候变暖情景" width="120" />
+          <el-table-column prop="uValue" label="气候变暖情景" width="220" />
         </el-table>
       </el-collapse-item>
     </el-collapse>
