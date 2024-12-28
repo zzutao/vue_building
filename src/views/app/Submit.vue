@@ -13,12 +13,17 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
+          <el-form-item label="设置种群个体数量" prop="individualCount">
+            <el-input-number v-model="form.individualCount" :min="1" :step="1" controls-position="right" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-form-item label="设置迭代代数" prop="iterationCount">
             <el-input-number v-model="form.iterationCount" :min="1" :step="1" controls-position="right" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="设置邮箱" prop="email">
+          <el-form-item label="设置结果发送邮箱" prop="email">
             <el-input v-model="form.email" />
           </el-form-item>
         </el-col>
@@ -37,6 +42,10 @@ export default {
         sampleCount: [
           { required: true, message: '请输入样本数量', trigger: 'blur' },
           { type: 'number', message: '样本数量必须是数字', trigger: 'blur' }
+        ],
+        individualCount: [
+          { required: true, message: '请输入种群个体数量', trigger: 'blur' },
+          { type: 'number', message: '种群个体数量必须是数字', trigger: 'blur' }
         ],
         iterationCount: [
           { required: true, message: '请输入迭代代数', trigger: 'blur' },
@@ -110,6 +119,7 @@ export default {
           tableData: this.filterTableData(this.$store.state.lacBasicData.tableData)
         },
         sampleCount: this.form.sampleCount,
+        individualCount: this.form.individualCount,
         iterationCount: this.form.iterationCount,
         userEmail: this.form.email // 将用户的邮箱添加到设计数据中
       }
