@@ -139,7 +139,19 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/app/LAC_Basic_Data'),
         name: 'Documentation',
-        meta: { title: 'LCA基础数据不确定性', icon: 'guide', affix: true }
+        meta: { title: 'LCA基础数据不确定性', icon: 'icon', affix: true }
+      }
+    ]
+  },
+  {
+    path: '/Submit',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/app/Submit'),
+        name: 'Documentation',
+        meta: { title: '设置并提交计算', icon: 'guide', affix: true }
       }
     ]
   }
