@@ -297,10 +297,10 @@ export default {
     <div slot="header" class="clearfix">
       <span>LCA基础数据及其不确定性设置</span>
       <!-- <el-button type="primary" style="float: right;" @click="submitData">提交数据</el-button> -->
-      <div style="float: right;">
+      <!-- <div style="float: right;">
         <el-input v-model="email" placeholder="请输入您的邮箱" style="width: 200px; margin-right: 10px;" />
         <el-button type="primary" @click="submitData">提交数据</el-button>
-      </div>
+      </div> -->
     </div>
     <el-form label-position="right" label-width="120px">
       <el-form-item label="请设置：">
